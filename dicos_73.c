@@ -1,0 +1,203 @@
+/*
+I am trying to open using sys call and read in tokens from the file. I need to create a linked list of tokens. I am getting tokens but once I tried my little implementation of trying to create nodes. I am getting a Segmentation fault: 11 What am I doing wrong here ?
+
+I have been on with this for a long time and I can not seem to get this down. Any help will be helpful. Thank you
+
+I want to know if my implementation is even correct for reading in tokens from the file and making a linked list?
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <ctype.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <string.h>
+
+#define BUFSIZE 1000
+
+struct node {
+    char data;
+    struct node *next;
+};
+
+int main(int argc, char const *argv[])
+{
+    // char str[100] = "Hello, my, name, is, Amir";
+    const char s[2] = ",";
+    char *token;
+
+
+    // printf("\nREAD FROM STRING.\n");
+    // //get the first token
+    // token = strtok(str, s);
+    // printf("First token: %s\n", token);
+
+    // while(token != NULL)
+    // {
+    //  printf("%s\n", token);
+
+    //  token = strtok(NULL, s);
+    // }
+    printf("file name: %s\n",argv[1]);
+    int fd, flag;
+    char *buffer[BUFSIZE];
+
+    char *print_tokens;
+    int token_idx;
+
+    char read_char;
+
+    struct node *p, *q, *head;
+    int i, n, item;
+
+    fd = open(argv[1], O_RDONLY);
+    if(fd == -1)
+    {
+        return -1;
+    }
+
+    // create the first node 
+    q = (struct node *)malloc(sizeof(struct node));
+    q->data = item;
+    q->next = NULL; 
+
+    printf("\nREAD FROM FILE.\n");
+
+    while((flag = read(fd, &read_char, 1))> 0)
+    {
+
+        token = strtok(&read_char, s);  
+
+        // create a node and point the value to the node
+        q = (struct node *)malloc(sizeof(struct node));
+        q->data = token;
+        q->next = NULL;
+
+
+        p->next = q;
+        p = p->next;
+        // while(token != NULL)
+        // {
+        //  printf("%s\n", token);
+
+        //  token = strtok(NULL, s);
+
+        // }
+
+    }
+
+    p = head;
+    while(!p)
+    {
+        printf("%s\n", p->data);
+        p = p->next;
+    }
+
+    return 0;
+}
+
+//comparator function for strings
+int compare(char *str1, char *str2) {
+    while (*str1 && *str1 == *str2) {
+        str1++;
+        str2++;
+    }
+    return *str1 - *str2;
+}
+*/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <ctype.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <string.h>
+
+#define BUFSIZE 1000
+
+struct node {
+    char *data;
+    struct node *next;
+};
+
+int main(int argc, char const *argv[])
+{
+    // char str[100] = "Hello, my, name, is, Amir";
+    const char s[2] = ",";
+    char *token;
+
+
+    // printf("\nREAD FROM STRING.\n");
+    // //get the first token
+    // token = strtok(str, s);
+    // printf("First token: %s\n", token);
+
+    // while(token != NULL)
+    // {
+    //  printf("%s\n", token);
+
+    //  token = strtok(NULL, s);
+    // }
+    printf("file name: %s\n",argv[1]);
+    int fd, flag;
+    char buffer[BUFSIZE];
+
+    char *print_tokens;
+    int token_idx;
+
+    char read_char;
+
+    struct node *p, *q, *head;
+    int i, n, item;
+
+    fd = open(argv[1], O_RDONLY);
+    if(fd == -1)
+    {
+        return -1;
+    }
+
+    // create the first node 
+    q = (struct node *)malloc(sizeof(struct node));
+    q->data = item;
+    q->next = NULL; 
+
+    printf("\nREAD FROM FILE.\n");
+
+    ssize_t bytes_read;
+
+    while ((bytes_read = read(fd, buffer, BUFSIZE)) > 0) {
+        buffer[bytes_read] = '\0';  // Null-terminate the buffer.
+        token = strtok(buffer, s);
+
+        while (token != NULL) {
+            printf("%s\n", token);
+            token = strtok(NULL, s);
+        }
+    }
+
+    head = (struct node *)malloc(sizeof(struct node));
+    head->next = NULL;
+    p = head; // Initialize p with the head.
+
+    while (p != NULL) {
+        struct node *temp = p;
+        p = p->next;
+        free(temp->data); // Free the token string.
+        free(temp);       // Free the node itself.
+    }
+
+    return 0;
+}
+
+
+//comparator function for strings
+int compare(char *str1, char *str2) {
+    while (*str1 && *str1 == *str2) {
+        str1++;
+        str2++;
+    }
+    return *str1 - *str2;
+}
